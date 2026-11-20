@@ -1,0 +1,7 @@
+對話編號：011
+
+使用者需求：將名片系統從 task-manager 拆分，建立獨立 e-cardfolio 專案與 GitHub repository。
+
+AI 協助摘要：複製名片系統必要的前後端原始碼及文件，排除 task-manager 專屬程式與本機資料庫；為新專案建立獨立 Spring Boot 啟動類別、OpenAPI 資訊、專案名稱、忽略檔與 README。
+
+相關程式碼標註：[AI assisted chat-011]。

@@ -1,0 +1,17 @@
+package com.ecardfolio.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class OpenApiConfig {
+    @Bean
+    public OpenAPI eCardfolioOpenAPI() {
+        return new OpenAPI().info(new Info()
+            .title("e-cardfolio API")
+            .description("Digital business card management API")
+            .version("1.0.0"));
+    }
+}
