@@ -1,12 +1,16 @@
 # e-cardfolio 數位名片管理系統
 
-e-cardfolio 是響應式數位名片管理應用，支援名片清單、建立、編輯、刪除、配色與顯示欄位自訂、公開狀態切換，以及可掃描的 QR code 公開名片頁。
+e-cardfolio 是響應式數位名片管理應用，支援名片清單、建立、編輯、刪除、配色與顯示欄位自訂、全螢幕名片展示、QR code 交換、附近系統分享、VCF 聯絡人匯出、名片圖片分享，以及本機名片收藏。
 
 ## 專案結構
 
-- ackend/：Spring Boot 3 REST API
-- rontend/：Vue 3 + Vite 單頁應用
+- `backend/`：Spring Boot 3 REST API
+- `frontend/`：Vue 3 + Vite 單頁應用
 - chat-records/：AI 協助紀錄
+
+## 交換與收藏
+
+公開名片頁可在目前裝置加入收藏；收藏暫存於瀏覽器，不會跨裝置同步。名片管理預覽提供全螢幕出示模式，含 QR code、Web Share 系統分享、VCF 聯絡人檔與 PNG 名片圖片。系統分享面板會依裝置提供 AirDrop、Quick Share 或其他可用目標；收件者仍需接受。
 
 ## 技術架構
 
@@ -28,7 +32,7 @@ cd backend
 
 Windows PowerShell：`cd backend; .\mvnw.cmd spring-boot:run`
 
-後端預設使用 `backend/data/cardfolio` 的 H2 檔案資料庫，第一次啟動會建立三張示範名片。要改用 PostgreSQL，設定 `SPRING_DATASOURCE_URL`、`SPRING_DATASOURCE_USERNAME` 和 `SPRING_DATASOURCE_PASSWORD` 環境變數即可。
+- `backend/`：Spring Boot 3 REST API
 
 ### 2. 啟動 Vue 前端
 
@@ -50,7 +54,7 @@ QR code 會使用後端偵測到的電腦區網 IP。若電腦有多張網卡或
 
 ## OpenAPI 規格與 API
 
-- OpenAPI 原始契約：[`backend/src/main/resources/openapi.yaml`](backend/src/main/resources/openapi.yaml)
+- `backend/`：Spring Boot 3 REST API
 - 執行中 Swagger UI：<http://localhost:8080/swagger-ui.html>
 - 執行中 OpenAPI JSON：<http://localhost:8080/v3/api-docs>
 - 執行中 OpenAPI YAML：<http://localhost:8080/v3/api-docs.yaml>
@@ -68,7 +72,7 @@ QR code 會使用後端偵測到的電腦區網 IP。若電腦有多張網卡或
 
 ## 領域模型
 
-領域模型原始碼：[`backend/src/main/java/com/ecardfolio/card/BusinessCard.java`](backend/src/main/java/com/ecardfolio/card/BusinessCard.java)、[`CardRequest.java`](backend/src/main/java/com/ecardfolio/card/CardRequest.java)。
+- `backend/`：Spring Boot 3 REST API
 
 | 欄位 | 型別 | 說明 |
 | --- | --- | --- |
