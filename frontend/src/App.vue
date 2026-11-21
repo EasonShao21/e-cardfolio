@@ -3,11 +3,15 @@ import { computed, onMounted, ref } from 'vue'
 
 // [AI assisted chat-009] AI 協助將介面由本機暫存改為呼叫 Spring Boot 名片 API。
 // [AI assisted chat-010] 手機經區網開啟時，API 網址沿用電腦的區網主機名稱。
+// [AI assisted chat-013] 修正展示彈窗狀態未宣告，並讓正式網址與區網網址各自使用正確來源。
 const apiBase = import.meta.env.VITE_API_BASE_URL || `${globalThis.location.protocol}//${globalThis.location.hostname}:8080/api`
 const cards = ref([])
 const pageMode = ref('cards')
-const favoriteCards = ref(JSON.parse(localStorage.getItem('e-cardfolio-favorites') || '[]'))
+const favoriteCards = ref(readFavorites())
 const shareOrigin = ref(globalThis.location.origin)
+const presentationOpen = ref(false)
+const presentationCard = ref(null)
+const presentationImage = ref(null)
 const selectedId = ref(null)
 const loading = ref(true)
 const search = ref('')
@@ -21,6 +25,10 @@ const selected = computed(() => visibleCards.value.find(card => card.id === sele
 const filteredCards = computed(() => visibleCards.value.filter(card => `${card.name} ${card.role} ${card.company}`.toLowerCase().includes(search.value.toLowerCase())))
 const publishedCount = computed(() => cards.value.filter(card => card.published).length)
 function initials(name) { return name.trim().split(/\s+/).map(part => part[0]).slice(0, 2).join('').toUpperCase() }
+function readFavorites() {
+  try { return JSON.parse(localStorage.getItem('e-cardfolio-favorites') || '[]') }
+  catch { return [] }
+}
 async function request(path = '', options = {}) {
   const response = await fetch(`${apiBase}/cards${path}`, { headers: { 'Content-Type': 'application/json' }, ...options })
   if (!response.ok) throw new Error(response.status === 404 ? '找不到這張名片' : '無法連線到名片服務')
@@ -111,6 +119,8 @@ async function shareCardImage(card) {
   notify('名片圖片已下載，可從相簿或檔案分享')
 }
 async function loadShareOrigin() {
+  // 正式網站直接使用目前網址；只有本機 localhost 開發時才改用後端偵測的區網 IP。
+  if (!['localhost', '127.0.0.1'].includes(globalThis.location.hostname)) return
   try {
     const response = await fetch(`${apiBase}/share-config`)
     if (response.ok) shareOrigin.value = (await response.json()).frontendBaseUrl

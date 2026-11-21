@@ -50,7 +50,9 @@ npm run dev
 2. 啟動 Vite 後，從電腦的區域網路網址開啟前端（Vite 會顯示 `Network` 網址）；不要用 `localhost` 網址在手機開啟。
 3. 電腦防火牆允許前端 `5173` 與後端 `8080` 連線。
 
-QR code 會使用後端偵測到的電腦區網 IP。若電腦有多張網卡或使用正式部署網址，可設定後端環境變數 `CARDFOLIO_FRONTEND_BASE_URL` 覆寫，例如 `http://192.168.1.20:5173`。手機掃碼必須能連到這個網址和 `8080` API 埠。
+在電腦以 `localhost:5173` 開發時，QR code 會使用後端偵測到的電腦區網 IP；手機與電腦須連同一個 Wi-Fi，並且 Vite 的 `5173`、Spring Boot 的 `8080` 埠都能從區網連線。若掃碼仍無法開啟，請以 Vite 顯示的 `Network` 網址在手機瀏覽器直接測試；公司／公共 Wi-Fi 的用戶隔離或電腦防火牆可能會阻擋裝置互連。
+
+正式部署時，QR code 改用目前網站網址，不會指向開發者電腦的區網 IP。前端需設定 `VITE_API_BASE_URL` 指向可公開連線的 API，例如 `https://api.example.com/api`；若要固定分享網址，可設定後端 `CARDFOLIO_FRONTEND_BASE_URL`。
 
 ## OpenAPI 規格與 API
 
