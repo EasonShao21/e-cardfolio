@@ -256,7 +256,7 @@ if (publicCardId) request(`/${publicCardId}`).then(card => { if (card.published)
 
 <template>
   <main v-if="isPublicRoute" class="public-card-page">
-    <div class="public-card-brand"><span class="brand-mark">c.</span><span>e-cardfolio</span></div>
+      <header class="public-card-header"><div class="public-card-brand"><span class="brand-mark">c.</span><span>e-cardfolio</span></div><a class="public-library-link" href="/">← <span>回到名片庫</span></a></header>
     <article v-if="publicCard" class="profile-card public-profile" :class="`theme-${publicCard.color}`">
       <span class="profile-brand">e-cardfolio<span>.</span></span><span class="profile-monogram">{{ publicCard.initials }}</span>
       <div class="profile-details"><div class="profile-name">{{ publicCard.name }}</div><div class="profile-role">{{ publicCard.role }}<template v-if="publicCard.company"> · {{ publicCard.company }}</template></div><div class="profile-rule"></div>

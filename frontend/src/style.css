@@ -45,3 +45,9 @@
 @media(max-width:480px){.auth-card{padding:28px 23px}.auth-gate{padding:16px}.auth-card h1{font-size:26px}}
 .logout-top{border:0;background:transparent;color:#765991;font-size:9px;padding:5px}
 @media(max-width:700px){.logout-top{font-size:8px;padding:4px}.top-actions{gap:7px}}
+
+/* [AI assisted chat-016] 公開名片頁提供返回名片庫的導覽入口。 */
+.public-card-header{width:min(440px,100%);display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.public-card-header .public-card-brand{margin:0}
+.public-library-link{display:inline-flex;align-items:center;gap:5px;padding:8px 10px;border:1px solid #e7e2e9;border-radius:8px;background:#fff;color:#6d567d;text-decoration:none;font-size:10px;font-weight:600}
+.public-library-link:hover{background:#f5f1f7;border-color:#d9cfe1}
