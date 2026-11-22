@@ -1,0 +1,9 @@
+對話編號：017
+
+使用者需求：將 e-cardfolio 部署成可提供 104 雇主操作的公開網站。
+
+AI 協助原因：協助處理 Vue + Spring Boot 的同網域部署、公開名片深層連結、正式環境連接埠與持久資料庫設定。
+
+AI 協助摘要：加入多階段 Dockerfile，將 Vue 編譯結果包入 Spring Boot 靜態資源；新增 SPA root 與公開名片路徑轉送；讀取平台 PORT 與 Forwarded headers；正式環境分享網址可由請求 Host 推導；更新部署與 PostgreSQL 說明。
+
+程式碼標註：[AI assisted chat-017]。

@@ -48,6 +48,21 @@ npm run dev
 
 開啟 Vite 顯示的網址（預設 `http://localhost:5173`）。Vite 會將 `/api` 代理至 `http://localhost:8080`，以共享 Session Cookie 和 CSRF Cookie。正式部署需讓前端與 API 同源，或設定 `VITE_API_BASE_URL` 並配置支援 credentials 的 CORS 與 HTTPS Cookie。
 
+## 部署成公開網站
+
+Repository 根目錄的 `Dockerfile` 會先建置 Vue，再把 `frontend/dist` 包進 Spring Boot 靜態資源，讓網站、登入 Session、CSRF Cookie 和 API 都走同一個 HTTPS 網域。`/card/{id}` 公開名片連結支援直接開啟與重新整理。
+
+以 Render 為例：
+
+1. 將 GitHub repository 連到 Render，建立 **Web Service**，選擇 `Docker`，Dockerfile 與 Context 使用 repository 根目錄。
+2. 建立 PostgreSQL 資料庫，並在 Web Service 設定：
+   - `SPRING_DATASOURCE_URL`：`jdbc:postgresql://<資料庫內部主機>:5432/<資料庫名稱>`
+   - `SPRING_DATASOURCE_USERNAME`、`SPRING_DATASOURCE_PASSWORD`：使用資料庫頁面提供的帳號密碼
+   - `CARDFOLIO_FRONTEND_BASE_URL`：`https://<你的服務網址>`（可選）
+3. 部署成功後，使用服務的 HTTPS 網址測試註冊、登入、跨裝置收藏與 `/card/{id}` 公開頁，再把該網址和 GitHub repository 網址放到 104 履歷的個人網站／專案成就。
+
+部署環境請使用 PostgreSQL，不要依賴容器本機的 H2 檔案。Render 免費 Web Service 閒置後會休眠；Render 免費 PostgreSQL 有使用期限，若要長期保留帳號、名片與收藏，請選用不會到期的資料庫方案並定期備份。Render 會從連結的 Git repository 建置部署；部署的費用與免費層限制依平台目前方案為準。
+
 ### 用手機掃描本機 QR code
 
 1. 確認手機和電腦連上同一個 Wi-Fi。

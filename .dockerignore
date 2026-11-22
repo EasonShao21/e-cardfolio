@@ -1,0 +1,10 @@
+.git
+.github
+**/node_modules
+**/target
+**/dist
+backend/data
+**/*.log
+frontend/preview-ui-*
+chat-records
+README.md

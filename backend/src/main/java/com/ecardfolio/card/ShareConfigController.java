@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.Inet4Address;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
@@ -20,10 +21,19 @@ public class ShareConfigController {
     }
 
     @GetMapping("/api/share-config")
-    public Map<String, String> getShareConfig() {
-        String baseUrl = configuredFrontendBaseUrl.isBlank()
-            ? "http://" + findLanAddress() + ":5173"
-            : configuredFrontendBaseUrl.replaceAll("/+$", "");
+    public Map<String, String> getShareConfig(HttpServletRequest request) {
+        String host = request.getServerName();
+        boolean localDevelopment = host.equals("localhost") || host.equals("127.0.0.1");
+        String baseUrl;
+        if (!configuredFrontendBaseUrl.isBlank()) {
+            baseUrl = configuredFrontendBaseUrl.replaceAll("/+$", "");
+        } else if (localDevelopment) {
+            baseUrl = "http://" + findLanAddress() + ":5173";
+        } else {
+            int port = request.getServerPort();
+            String authority = host + ((request.isSecure() && port == 443) || (!request.isSecure() && port == 80) ? "" : ":" + port);
+            baseUrl = request.getScheme() + "://" + authority;
+        }
         return Map.of("frontendBaseUrl", baseUrl);
     }
 
