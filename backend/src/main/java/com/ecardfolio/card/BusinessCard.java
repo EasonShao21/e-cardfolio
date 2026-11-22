@@ -1,6 +1,8 @@
 package com.ecardfolio.card;
 
 import jakarta.persistence.*;
+import com.ecardfolio.account.UserAccount;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,8 @@ public class BusinessCard {
     @Column(nullable = false) private boolean published = true;
     @Column(nullable = false, updatable = false) private Instant createdAt = Instant.now();
     @Column(nullable = false) private Instant updatedAt = Instant.now();
+    // [AI assisted chat-015] 關聯到擁有者，名片管理 API 僅允許擁有者存取。
+    @JsonIgnore @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "owner_id") private UserAccount owner;
 
     @PreUpdate void touch() { updatedAt = Instant.now(); }
     public Long getId() { return id; }
@@ -53,4 +57,6 @@ public class BusinessCard {
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+    public UserAccount getOwner() { return owner; }
+    public void setOwner(UserAccount owner) { this.owner = owner; }
 }

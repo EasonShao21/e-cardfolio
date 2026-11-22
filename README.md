@@ -1,6 +1,6 @@
 # e-cardfolio 數位名片管理系統
 
-e-cardfolio 是響應式數位名片管理應用，支援名片清單、建立、編輯、刪除、配色與顯示欄位自訂、全螢幕名片展示、QR code 交換、附近系統分享、VCF 聯絡人匯出、名片圖片分享，以及本機名片收藏。
+e-cardfolio 是響應式數位名片管理應用，支援帳號註冊與登入、名片清單與 CRUD、配色與顯示欄位自訂、全螢幕名片展示、QR code 交換、附近系統分享、VCF 匯出，以及跨裝置同步收藏。
 
 ## 專案結構
 
@@ -10,11 +10,15 @@ e-cardfolio 是響應式數位名片管理應用，支援名片清單、建立�
 
 ## 交換與收藏
 
-公開名片頁可在目前裝置加入收藏；收藏暫存於瀏覽器，不會跨裝置同步。名片管理預覽提供全螢幕出示模式，含 QR code、Web Share 系統分享、VCF 聯絡人檔與 PNG 名片圖片。系統分享面板會依裝置提供 AirDrop、Quick Share 或其他可用目標；收件者仍需接受。
+使用者以 Email 和至少 8 個字元的密碼註冊／登入。密碼以 BCrypt 雜湊後儲存，登入狀態使用伺服器 Session，並以 CSRF Token 保護寫入 API。名片與收藏會儲存在後端資料庫，帳號只能管理自己的名片；公開名片仍可匿名瀏覽。登入同一帳號的手機與桌機會取得相同收藏清單。舊版本機收藏會在該瀏覽器首次登入後嘗試匯入帳號。
+
+第一次使用時開啟網站，選擇「還沒有帳號？免費註冊」；在另一台裝置用相同 Email 和密碼登入，即可同步名片與收藏。登入 Session 分別存在每台裝置的瀏覽器中。
+
+公開名片頁可讓訪客登入或註冊後收藏；名片管理預覽提供全螢幕出示模式，含 QR code、Web Share 系統分享、VCF 聯絡人檔與 PNG 名片圖片。系統分享面板會依裝置提供 AirDrop、Quick Share 或其他可用目標；收件者仍需接受。第一次註冊的帳號會接手資料庫裡尚未綁定帳號的舊名片，之後建立的帳號只會看到自己的名片。
 
 ## 技術架構
 
-- **Backend**：Java 21、Spring Boot 3、Spring Web、Spring Data JPA、Bean Validation
+- **Backend**：Java 21、Spring Boot 3、Spring Web、Spring Data JPA、Spring Security、Bean Validation
 - **Frontend**：Vue 3、Vite
 - **Database**：H2 持久化資料庫（開箱即用）；可透過環境變數切換至 PostgreSQL
 - **API contract**：OpenAPI 3.0
@@ -42,7 +46,7 @@ npm install
 npm run dev
 ```
 
-開啟 Vite 顯示的網址（預設 `http://localhost:5173`）。若 API 不在 `http://localhost:8080`，設定前端環境變數 `VITE_API_BASE_URL` 為 API 前綴，例如 `https://api.example.com/api`。
+開啟 Vite 顯示的網址（預設 `http://localhost:5173`）。Vite 會將 `/api` 代理至 `http://localhost:8080`，以共享 Session Cookie 和 CSRF Cookie。正式部署需讓前端與 API 同源，或設定 `VITE_API_BASE_URL` 並配置支援 credentials 的 CORS 與 HTTPS Cookie。
 
 ### 用手機掃描本機 QR code
 
@@ -64,6 +68,14 @@ npm run dev
 | 方法 | 路徑 | 說明 |
 | --- | --- | --- |
 | `GET` | `/api/cards` | 列出名片 |
+| `POST` | `/api/auth/register` | 建立帳號並登入 |
+| `POST` | `/api/auth/login` | 登入 |
+| `GET` | `/api/auth/me` | 取得目前使用者 |
+| `POST` | `/api/auth/logout` | 登出 |
+| `GET` | `/api/auth/csrf` | 初始化 CSRF Cookie 與 Token |
+| `GET` | `/api/favorites` | 取得帳號收藏清單 |
+| `POST` | `/api/favorites/{cardId}` | 收藏公開名片 |
+| `DELETE` | `/api/favorites/{cardId}` | 移除收藏 |
 | `GET` | `/api/share-config` | 取得手機掃碼用的前端網址 |
 | `POST` | `/api/cards` | 建立名片 |
 | `GET` | `/api/cards/{id}` | 取得公開名片（私人或不存在的名片回傳 404） |
@@ -92,10 +104,20 @@ npm run dev
 | `createdAt` | Instant | 建立時間 |
 | `updatedAt` | Instant | 最後更新時間 |
 
+其他持久化模型：
+
+| 模型 | 欄位 | 說明 |
+| --- | --- | --- |
+| `UserAccount` | `id`, `email`, `displayName`, `passwordHash`, `createdAt` | 使用者帳號；`passwordHash` 僅存 BCrypt 雜湊，不回傳至前端 |
+| `FavoriteCard` | `id`, `user`, `card`, `createdAt` | 使用者與公開名片的關聯；同一帳號不能重複收藏同一名片 |
+| `BusinessCard` | `owner` | 名片所屬帳號；匿名公開頁只讀取已公開名片 |
+
+收藏、帳號與名片歸屬資料由 Spring Data JPA 儲存於目前設定的資料庫。
+
 ## GitHub
 
 Repository：<https://github.com/EasonShao21/e-cardfolio>
 
 ## AI 使用紀錄
 
-本次使用 AI 協助建立名片領域模型、CRUD API 與 OpenAPI 契約，將前端資料接至 API，並處理手機透過區域網路掃描 QR code 的情境。程式碼標註與對話摘要位於 [`chat-records/009.chat`](chat-records/009.chat)、[`chat-records/010.chat`](chat-records/010.chat) 和 [`chat-records/011.chat`](chat-records/011.chat)。
+本次使用 AI 協助建立名片領域模型、CRUD API 與 OpenAPI 契約，將前端資料接至 API，處理手機掃描 QR code、RWD 選單與帳號登入／跨裝置收藏。程式碼標註與對話摘要位於 `chat-records/009.chat` 至 `chat-records/015.chat`。

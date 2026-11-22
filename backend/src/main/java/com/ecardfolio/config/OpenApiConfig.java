@@ -2,6 +2,8 @@ package com.ecardfolio.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,6 +14,8 @@ public class OpenApiConfig {
         return new OpenAPI().info(new Info()
             .title("e-cardfolio API")
             .description("Digital business card management API")
-            .version("1.0.0"));
+            .version("1.0.0"))
+            .components(new Components().addSecuritySchemes("sessionAuth", new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.COOKIE).name("JSESSIONID")));
     }
 }
