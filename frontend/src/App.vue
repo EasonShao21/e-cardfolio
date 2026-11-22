@@ -14,6 +14,7 @@ const presentationCard = ref(null)
 const presentationImage = ref(null)
 const selectedId = ref(null)
 const loading = ref(true)
+const mobileMenuOpen = ref(false)
 const search = ref('')
 const modalOpen = ref(false)
 const editingId = ref(null)
@@ -50,6 +51,7 @@ function toggleFavorite(card) {
 }
 function setPageMode(mode) {
   pageMode.value = mode
+  mobileMenuOpen.value = false
   selectedId.value = mode === 'favorites' ? favoriteCards.value[0]?.id ?? null : cards.value[0]?.id ?? null
 }
 function xmlText(value) { return String(value || '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[char]) }
@@ -200,8 +202,9 @@ if (publicCardId) request(`/${publicCardId}`).then(card => { if (card.published)
     <p v-if="!publicCard">找不到這張名片，或名片尚未公開。</p>
   </main>
   <div v-else class="app-shell">
-    <aside class="sidebar">
+    <aside class="sidebar" :class="{ 'menu-open': mobileMenuOpen }">
       <a class="brand" href="#"><span class="brand-mark">c.</span><span>cardfolio<span class="brand-dot">.</span></span></a>
+      <button class="mobile-menu-toggle" type="button" :aria-expanded="mobileMenuOpen" aria-label="切換側邊選單" @click="mobileMenuOpen = !mobileMenuOpen"><span>{{ mobileMenuOpen ? '×' : '☰' }}</span><span class="mobile-menu-label">{{ mobileMenuOpen ? '關閉選單' : '選單' }}</span></button>
       <div class="workspace-label">WORKSPACE</div>
       <button class="nav-item" :class="{ active: pageMode === 'cards' }" @click="setPageMode('cards')"><span class="nav-icon">▦</span> 我的名片 <span class="nav-count">{{ cards.length }}</span></button>
       <button class="nav-item" :class="{ active: pageMode === 'favorites' }" @click="setPageMode('favorites')"><span class="nav-icon">♡</span> 收藏名片 <span class="nav-count">{{ favoriteCards.length }}</span></button>
