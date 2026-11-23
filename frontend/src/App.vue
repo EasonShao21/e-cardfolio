@@ -280,7 +280,8 @@ if (publicCardId) request(`/${publicCardId}`).then(card => { if (card.published)
       <div class="workspace-label">WORKSPACE</div>
       <button class="nav-item" :class="{ active: pageMode === 'cards' }" @click="setPageMode('cards')"><span class="nav-icon">▦</span> 我的名片 <span class="nav-count">{{ cards.length }}</span></button>
       <button class="nav-item" :class="{ active: pageMode === 'favorites' }" @click="setPageMode('favorites')"><span class="nav-icon">♡</span> 收藏名片 <span class="nav-count">{{ favoriteCards.length }}</span></button>
-      <button class="nav-item" @click="notify('公開頁面即將推出')"><span class="nav-icon">◎</span> 公開頁面</button>
+      <!-- [AI assisted chat-018] 暫時隱藏尚未實作的公開頁面頁籤。 -->
+      <!-- <button class="nav-item" @click="notify('公開頁面即將推出')"><span class="nav-icon">◎</span> 公開頁面</button> -->
       <div class="side-bottom">
         <div class="side-tip"><span class="tip-spark">✳</span><strong>讓每一次交換<br>都留下好印象。</strong><p>一張名片，連結你的<br>所有專業可能。</p><span class="tip-orb orb-one"></span><span class="tip-orb orb-two"></span></div>
         <div class="profile-row"><div class="avatar-small">{{ initials(currentUser.displayName) }}</div><div><strong>{{ currentUser.displayName }}</strong><small>{{ currentUser.email }}</small></div><button class="more logout-button" title="登出" @click="logout">↗</button></div>
