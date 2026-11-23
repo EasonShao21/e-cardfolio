@@ -53,6 +53,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.csrfTokenRepository(csrfRepository).csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
             .authenticationProvider(provider)
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico", "/card/**").permitAll()
                 .requestMatchers("/api/auth/csrf", "/api/auth/register", "/api/auth/login", "/api/share-config", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cards/*").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
